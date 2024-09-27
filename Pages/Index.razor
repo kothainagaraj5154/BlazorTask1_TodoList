@@ -1,0 +1,47 @@
+﻿@page "/"
+
+<h3>To-Do List</h3>
+
+<input @bind="newTodo" placeholder="Enter a new task" />
+<button @onclick="AddTodo">Add</button>
+
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>
+            <input type="checkbox" @bind="todo.IsCompleted" />
+            <span class="@GetItemClass(todo.IsCompleted)">@todo.Description</span>
+            <button @onclick="@(() => RemoveTodo(todo))">Delete</button>
+        </li>
+    }
+</ul>
+
+@code {
+    private string newTodo;
+    private List<TodoItem> todos = new List<TodoItem>();
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todos.Add(new TodoItem { Description = newTodo });
+            newTodo = string.Empty; // Clear input field
+        }
+    }
+
+    private void RemoveTodo(TodoItem todo)
+    {
+        todos.Remove(todo);
+    }
+
+    private string GetItemClass(bool isCompleted)
+    {
+        return isCompleted ? "completed" : string.Empty;
+    }
+
+    public class TodoItem
+    {
+        public string Description { get; set; }
+        public bool IsCompleted { get; set; }
+    }
+}
